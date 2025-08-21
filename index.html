@@ -127,22 +127,23 @@
     <div class="value">Plug: <button id="plug-btn" class="relay-btn off">OFF</button></div>
     <div class="value">Fan: <button id="fan-btn" class="relay-btn off">OFF</button></div>
     <div class="value">Pool Pump: <button id="pool-btn" class="relay-btn off">OFF</button></div>
+    <div class="value">Lights: <button id="lights-btn" class="relay-btn off">OFF</button></div>
   </div>
 
   <div id="log"></div>
 </div>
 
 <script>
-  const correctPIN = "1234"; // Change this to your secure PIN
+  const correctPIN = "1234";
   let simulatedData = {
     voltage: 230.5,
     current: 5.2,
     power: 1197,
-    ai_suggestion: "Turn off Pool Pump",
     relays: {
       plug: "OFF",
       fan: "OFF",
-      pool: "ON"
+      pool: "ON",
+      lights: "OFF"
     }
   };
 
@@ -160,29 +161,33 @@
       document.getElementById("login-message").innerHTML = "❌ Incorrect PIN";
       logDiv.innerHTML += `<div>🚨 Wrong PIN attempt at ${now}</div>`;
       sendEmail("Wrong PIN", now);
-      captureImage(); // Simulated image capture
+      captureImage();
     }
   }
 
   function sendEmail(status, time) {
     console.log(`📧 Email sent: ${status} at ${time}`);
-    // Replace with real email API (e.g., EmailJS, Firebase Functions)
   }
 
   function captureImage() {
     console.log("📸 Captured image of intruder (simulated)");
-    // Replace with real camera API or ESP32-CAM integration
   }
 
   function updateDashboard(data) {
     document.getElementById("voltage").textContent = `${data.voltage} V`;
     document.getElementById("current").textContent = `${data.current} A`;
     document.getElementById("power").textContent = `${data.power} W`;
-    document.getElementById("ai-suggestion").textContent = data.ai_suggestion;
+
+    const poolState = data.relays.pool;
+    const suggestion = poolState === "ON"
+      ? "✅ Pool Pump is running. You may turn it off."
+      : "💡 Suggestion: Turn on Pool Pump";
+    document.getElementById("ai-suggestion").textContent = suggestion;
 
     updateRelayButton("plug", data.relays.plug);
     updateRelayButton("fan", data.relays.fan);
     updateRelayButton("pool", data.relays.pool);
+    updateRelayButton("lights", data.relays.lights);
   }
 
   function updateRelayButton(device, state) {
@@ -194,11 +199,21 @@
   function toggleRelay(device) {
     simulatedData.relays[device] = simulatedData.relays[device] === "ON" ? "OFF" : "ON";
     updateDashboard(simulatedData);
+
+    if (device === "pool" && simulatedData.relays.pool === "ON") {
+      setTimeout(() => {
+        simulatedData.relays.pool = "OFF";
+        updateDashboard(simulatedData);
+        const now = new Date().toLocaleString();
+        document.getElementById("log").innerHTML += `<div>⏱️ Pool Pump auto-off at ${now}</div>`;
+      }, 3600000);
+    }
   }
 
   document.getElementById("plug-btn").addEventListener("click", () => toggleRelay("plug"));
   document.getElementById("fan-btn").addEventListener("click", () => toggleRelay("fan"));
   document.getElementById("pool-btn").addEventListener("click", () => toggleRelay("pool"));
+  document.getElementById("lights-btn").addEventListener("click", () => toggleRelay("lights"));
 
   setInterval(() => {
     simulatedData.power = Math.floor(Math.random() * 1500);
@@ -213,4 +228,4 @@
 </h1>
 
 </body>
-</html>
+</
