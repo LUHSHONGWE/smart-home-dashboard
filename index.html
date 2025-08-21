@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Home Secure Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1f1c2c, #928dab);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: #2c2c54;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .value {
+      font-size: 16px;
+    }
+    .relay-btn {
+      padding: 8px 16px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .on { background-color: #4CAF50; color: white; }
+    .off { background-color: #f44336; color: white; }
+    #login-screen {
+      text-align: center;
+    }
+    input[type="password"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      margin-bottom: 10px;
+      width: 80%;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background-color: #00a8ff;
+      color: white;
+      cursor: pointer;
+    }
+    #log {
+      font-size: 14px;
+      margin-top: 20px;
+      background: #1e272e;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<p style="text-align:center; margin-top:20px;">
+  🔗 Live Site: 
+  <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" target="_blank" style="color:#00a8ff; text-decoration:none; font-weight:bold;">
+    Click here to view the dashboard
+  </a>
+</p>
+
+<div style="text-align:center; margin-top:20px;">
+  <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" target="_blank" style="padding:10px 20px; background-color:#00a8ff; color:white; border-radius:5px; text-decoration:none; font-weight:bold;">
+    🚀 Launch Smart Home Dashboard
+  </a>
+</div>
+
+<div class="container" id="login-screen">
+  <h1>🔐 Enter PIN to Access Smart Home</h1>
+  <input type="password" id="pin-input" placeholder="Enter PIN">
+  <br>
+  <button onclick="validatePIN()">Login</button>
+  <div id="login-message"></div>
+</div>
+
+<div class="container" id="dashboard" style="display:none;">
+  <h1>🏠 Smart Home Dashboard</h1>
+
+  <div class="card">
+    <div class="title">Voltage</div>
+    <div class="value" id="voltage">-- V</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Current</div>
+    <div class="value" id="current">-- A</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Power</div>
+    <div class="value" id="power">-- W</div>
+  </div>
+
+  <div class="card">
+    <div class="title">AI Suggestion</div>
+    <div class="value" id="ai-suggestion">--</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Relay Controls</div>
+    <div class="value">Plug: <button id="plug-btn" class="relay-btn off">OFF</button></div>
+    <div class="value">Fan: <button id="fan-btn" class="relay-btn off">OFF</button></div>
+    <div class="value">Pool Pump: <button id="pool-btn" class="relay-btn off">OFF</button></div>
+  </div>
+
+  <div id="log"></div>
+</div>
+
+<script>
+  const correctPIN = "1234"; // Change this to your secure PIN
+  let simulatedData = {
+    voltage: 230.5,
+    current: 5.2,
+    power: 1197,
+    ai_suggestion: "Turn off Pool Pump",
+    relays: {
+      plug: "OFF",
+      fan: "OFF",
+      pool: "ON"
+    }
+  };
+
+  function validatePIN() {
+    const input = document.getElementById("pin-input").value;
+    const now = new Date().toLocaleString();
+    const logDiv = document.getElementById("log");
+
+    if (input === correctPIN) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      logDiv.innerHTML += `<div>✅ Correct PIN entered at ${now}</div>`;
+      sendEmail("Correct PIN", now);
+    } else {
+      document.getElementById("login-message").innerHTML = "❌ Incorrect PIN";
+      logDiv.innerHTML += `<div>🚨 Wrong PIN attempt at ${now}</div>`;
+      sendEmail("Wrong PIN", now);
+      captureImage(); // Simulated image capture
+    }
+  }
+
+  function sendEmail(status, time) {
+    console.log(`📧 Email sent: ${status} at ${time}`);
+    // Replace with real email API (e.g., EmailJS, Firebase Functions)
+  }
+
+  function captureImage() {
+    console.log("📸 Captured image of intruder (simulated)");
+    // Replace with real camera API or ESP32-CAM integration
+  }
+
+  function updateDashboard(data) {
+    document.getElementById("voltage").textContent = `${data.voltage} V`;
+    document.getElementById("current").textContent = `${data.current} A`;
+    document.getElementById("power").textContent = `${data.power} W`;
+    document.getElementById("ai-suggestion").textContent = data.ai_suggestion;
+
+    updateRelayButton("plug", data.relays.plug);
+    updateRelayButton("fan", data.relays.fan);
+    updateRelayButton("pool", data.relays.pool);
+  }
+
+  function updateRelayButton(device, state) {
+    const btn = document.getElementById(`${device}-btn`);
+    btn.textContent = state;
+    btn.className = `relay-btn ${state === "ON" ? "on" : "off"}`;
+  }
+
+  function toggleRelay(device) {
+    simulatedData.relays[device] = simulatedData.relays[device] === "ON" ? "OFF" : "ON";
+    updateDashboard(simulatedData);
+  }
+
+  document.getElementById("plug-btn").addEventListener("click", () => toggleRelay("plug"));
+  document.getElementById("fan-btn").addEventListener("click", () => toggleRelay("fan"));
+  document.getElementById("pool-btn").addEventListener("click", () => toggleRelay("pool"));
+
+  setInterval(() => {
+    simulatedData.power = Math.floor(Math.random() * 1500);
+    updateDashboard(simulatedData);
+  }, 5000);
+
+  updateDashboard(simulatedData);
+</script>
+
+<h1>
+  🏠 <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" style="color: #00a8ff; text-decoration: none;">Smart Home Dashboard</a>
+</h1>
+
+</body>
+</html>
