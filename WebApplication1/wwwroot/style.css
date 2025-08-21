@@ -1,0 +1,56 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 250px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .card h2 {
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+.sensor {
+    border-left: 6px solid #4CAF50;
+}
+
+.power {
+    border-left: 6px solid #FF9800;
+}
+
+.ai {
+    border-left: 6px solid #2196F3;
+}
+
+.relays {
+    border-left: 6px solid #9C27B0;
+}
+
+.security {
+    border-left: 6px solid #F44336;
+}
