@@ -215,12 +215,18 @@
   document.getElementById("pool-btn").addEventListener("click", () => toggleRelay("pool"));
   document.getElementById("lights-btn").addEventListener("click", () => toggleRelay("lights"));
 
-  setInterval(() => {
-    simulatedData.power = Math.floor(Math.random() * 1500);
-    updateDashboard(simulatedData);
-  }, 5000);
+async function fetchLiveData() {
+  try {
+    const response = await fetch("http://192.168.1.100/data");
+    const data = await response.json();
+    updateDashboard(data);
+  } catch (error) {
+    console.error("Failed to fetch live data:", error);
+  }
+}
 
-  updateDashboard(simulatedData);
+setInterval(fetchLiveData, 5000);
+fetchLiveData();
 </script>
 
 <h1>
