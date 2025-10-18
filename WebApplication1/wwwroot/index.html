@@ -217,7 +217,7 @@
 
 async function fetchLiveData() {
   try {
-    const response = await fetch("http://192.168.1.100/data");
+    const response = await fetch("http://172.20.10.3:3000/data");
     const data = await response.json();
     updateDashboard(data);
   } catch (error) {
