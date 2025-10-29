@@ -2,230 +2,420 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Home Secure Dashboard</title>
+  <title>AI Security Dashboard</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #1f1c2c, #928dab);
       color: #fff;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
     .container {
-      max-width: 600px;
-      margin: 50px auto;
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(0,0,0,0.7);
+      border-radius: 15px;
       padding: 20px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
     h1 {
       text-align: center;
       margin-bottom: 30px;
+      color: #00ff88;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
     }
     .card {
       background: #2c2c54;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 15px;
-      margin-bottom: 15px;
+      border-left: 4px solid #00ff88;
     }
-    .title {
+    .card.critical {
+      border-left-color: #ff4444;
+      background: #542c2c;
+    }
+    .card.warning {
+      border-left-color: #ffaa00;
+      background: #54542c;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #00ff88;
+    }
+    .card-value {
       font-size: 18px;
       font-weight: bold;
-      margin-bottom: 5px;
     }
-    .value {
-      font-size: 16px;
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 8px;
     }
-    .relay-btn {
-      padding: 8px 16px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    .status-armed { background: #ff4444; color: white; }
+    .status-disarmed { background: #00ff88; color: black; }
+    .status-locked { background: #ffaa00; color: black; }
+    .connection-status {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
       font-weight: bold;
     }
-    .on { background-color: #4CAF50; color: white; }
-    .off { background-color: #f44336; color: white; }
-    #login-screen {
+    .connected { background: #00ff88; color: black; }
+    .disconnected { background: #ff4444; color: white; }
+    .searching { background: #ffaa00; color: black; }
+    .ai-suggestion {
+      background: #1e1e3f;
+      border: 2px solid #00ff88;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 16px;
+    }
+    .login-screen {
       text-align: center;
+      padding: 40px;
     }
     input[type="password"] {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 8px;
       border: none;
-      margin-bottom: 10px;
-      width: 80%;
+      margin: 15px 0;
+      width: 200px;
+      text-align: center;
     }
     button {
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 16px;
-      border-radius: 5px;
+      border-radius: 8px;
       border: none;
-      background-color: #00a8ff;
-      color: white;
+      background: #00ff88;
+      color: black;
+      font-weight: bold;
       cursor: pointer;
+      margin: 5px;
     }
-    #log {
-      font-size: 14px;
-      margin-top: 20px;
-      background: #1e272e;
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .sensor-item {
+      text-align: center;
       padding: 10px;
-      border-radius: 5px;
+      background: #1e1e3f;
+      border-radius: 8px;
+    }
+    .last-event {
+      background: #1e1e3f;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
 
-<p style="text-align:center; margin-top:20px;">
-  🔗 Live Site: 
-  <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" target="_blank" style="color:#00a8ff; text-decoration:none; font-weight:bold;">
-    Click here to view the dashboard
-  </a>
-</p>
-
-<div style="text-align:center; margin-top:20px;">
-  <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" target="_blank" style="padding:10px 20px; background-color:#00a8ff; color:white; border-radius:5px; text-decoration:none; font-weight:bold;">
-    🚀 Launch Smart Home Dashboard
-  </a>
-</div>
-
 <div class="container" id="login-screen">
-  <h1>🔐 Enter PIN to Access Smart Home</h1>
-  <input type="password" id="pin-input" placeholder="Enter PIN">
-  <br>
-  <button onclick="validatePIN()">Login</button>
-  <div id="login-message"></div>
+  <div class="login-screen">
+    <h1>🔐 AI Security System</h1>
+    <p>Enter PIN to access dashboard</p>
+    <input type="password" id="pin-input" placeholder="Enter PIN" maxlength="4">
+    <br>
+    <button onclick="validatePIN()">🔓 Login</button>
+    <div id="login-message"></div>
+  </div>
 </div>
 
 <div class="container" id="dashboard" style="display:none;">
-  <h1>🏠 Smart Home Dashboard</h1>
-
-  <div class="card">
-    <div class="title">Voltage</div>
-    <div class="value" id="voltage">-- V</div>
+  <h1>🤖 AI Security Dashboard</h1>
+  
+  <div id="connection-status" class="connection-status searching">
+    🔍 Searching for ESP32...
   </div>
 
-  <div class="card">
-    <div class="title">Current</div>
-    <div class="value" id="current">-- A</div>
+  <!-- AI Suggestion -->
+  <div id="ai-suggestion" class="ai-suggestion">
+    Loading AI analysis...
   </div>
 
-  <div class="card">
-    <div class="title">Power</div>
-    <div class="value" id="power">-- W</div>
+  <div class="grid">
+    <!-- System Status -->
+    <div class="card" id="system-card">
+      <div class="card-title">🛡️ System Status</div>
+      <div class="card-value">
+        <span id="system-status">--</span>
+        <span id="system-badge" class="status-badge">--</span>
+      </div>
+      <div>Wrong Attempts: <span id="wrong-attempts">0</span>/3</div>
+      <div>Time Lock: <span id="time-lock">No</span></div>
+    </div>
+
+    <!-- Power Monitoring -->
+    <div class="card">
+      <div class="card-title">⚡ Power</div>
+      <div class="card-value">
+        <div>Voltage: <span id="voltage">--</span>V</div>
+        <div>Current: <span id="current">--</span>A</div>
+        <div>Power: <span id="power">--</span>W</div>
+      </div>
+    </div>
+
+    <!-- Environment -->
+    <div class="card">
+      <div class="card-title">🌡️ Environment</div>
+      <div class="card-value">
+        <div>Temperature: <span id="temperature">--</span>°C</div>
+        <div>Humidity: <span id="humidity">--</span>%</div>
+        <div>Time: <span id="current-time">--</span></div>
+      </div>
+    </div>
+
+    <!-- AI Analysis -->
+    <div class="card">
+      <div class="card-title">🤖 AI Analysis</div>
+      <div class="card-value">
+        <div>Normal Hours: <span id="normal-hours">--</span></div>
+        <div>Work Hours: <span id="work-hours">--</span></div>
+        <div>Sleep Hours: <span id="sleep-hours">--</span></div>
+        <div>Unusual: <span id="unusual-activity">--</span></div>
+      </div>
+    </div>
   </div>
 
+  <!-- Sensors -->
   <div class="card">
-    <div class="title">AI Suggestion</div>
-    <div class="value" id="ai-suggestion">--</div>
+    <div class="card-title">🎯 Sensors</div>
+    <div class="sensor-grid">
+      <div class="sensor-item">
+        <div>Motion</div>
+        <div id="motion-status" class="card-value">--</div>
+      </div>
+      <div class="sensor-item">
+        <div>Window</div>
+        <div id="window-status" class="card-value">--</div>
+      </div>
+      <div class="sensor-item">
+        <div>Fan Speed</div>
+        <div id="fan-speed" class="card-value">--</div>
+      </div>
+      <div class="sensor-item">
+        <div>Fan Status</div>
+        <div id="fan-status" class="card-value">--</div>
+      </div>
+    </div>
   </div>
 
+  <!-- Relays -->
   <div class="card">
-    <div class="title">Relay Controls</div>
-    <div class="value">Plug: <button id="plug-btn" class="relay-btn off">OFF</button></div>
-    <div class="value">Fan: <button id="fan-btn" class="relay-btn off">OFF</button></div>
-    <div class="value">Pool Pump: <button id="pool-btn" class="relay-btn off">OFF</button></div>
-    <div class="value">Lights: <button id="lights-btn" class="relay-btn off">OFF</button></div>
+    <div class="card-title">🔌 Relays</div>
+    <div class="sensor-grid">
+      <div class="sensor-item">
+        <div>Pool Pump</div>
+        <div id="pool-status" class="card-value">--</div>
+      </div>
+      <div class="sensor-item">
+        <div>Lights</div>
+        <div id="lights-status" class="card-value">--</div>
+      </div>
+    </div>
   </div>
 
-  <div id="log"></div>
+  <!-- Last Event -->
+  <div class="last-event">
+    <div class="card-title">📋 Last Event</div>
+    <div>Reason: <span id="last-reason">--</span></div>
+    <div>Time: <span id="last-event-time">--</span></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="refreshData()">🔄 Refresh</button>
+    <button onclick="disconnect()">🔌 Disconnect</button>
+  </div>
 </div>
 
 <script>
   const correctPIN = "1234";
-  let simulatedData = {
-    voltage: 230.5,
-    current: 5.2,
-    power: 1197,
-    relays: {
-      plug: "OFF",
-      fan: "OFF",
-      pool: "ON",
-      lights: "OFF"
-    }
-  };
+  let esp32IP = null;
+  let refreshInterval = null;
 
   function validatePIN() {
     const input = document.getElementById("pin-input").value;
-    const now = new Date().toLocaleString();
-    const logDiv = document.getElementById("log");
-
     if (input === correctPIN) {
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
-      logDiv.innerHTML += `<div>✅ Correct PIN entered at ${now}</div>`;
-      sendEmail("Correct PIN", now);
+      initializeConnection();
     } else {
       document.getElementById("login-message").innerHTML = "❌ Incorrect PIN";
-      logDiv.innerHTML += `<div>🚨 Wrong PIN attempt at ${now}</div>`;
-      sendEmail("Wrong PIN", now);
-      captureImage();
     }
   }
 
-  function sendEmail(status, time) {
-    console.log(`📧 Email sent: ${status} at ${time}`);
+  async function initializeConnection() {
+    esp32IP = localStorage.getItem('esp32_ip');
+    if (!esp32IP) {
+      await discoverESP32();
+    } else {
+      fetchLiveData();
+      startAutoRefresh();
+    }
   }
 
-  function captureImage() {
-    console.log("📸 Captured image of intruder (simulated)");
+  async function discoverESP32() {
+    const commonIPs = [
+      "192.168.1.100", "192.168.1.101", "192.168.1.102",
+      "192.168.0.100", "192.168.0.101", "192.168.0.102", 
+      "172.20.10.2", "172.20.10.3", "172.20.10.4"
+    ];
+    
+    updateConnectionStatus("searching", "🔍 Searching for ESP32...");
+    
+    for (const ip of commonIPs) {
+      try {
+        const response = await fetch(`http://${ip}:3000/data`, { 
+          method: 'GET',
+          signal: AbortSignal.timeout(3000)
+        });
+        if (response.ok) {
+          esp32IP = ip;
+          localStorage.setItem('esp32_ip', ip);
+          updateConnectionStatus("connected", `✅ Connected to ${ip}`);
+          fetchLiveData();
+          startAutoRefresh();
+          return;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    
+    updateConnectionStatus("disconnected", "❌ ESP32 not found. Check connection.");
+  }
+
+  async function fetchLiveData() {
+    if (!esp32IP) return;
+    
+    try {
+      const response = await fetch(`http://${esp32IP}:3000/data`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      
+      const data = await response.json();
+      updateDashboard(data);
+      updateConnectionStatus("connected", `✅ Connected - ${data.current_time}`);
+      
+    } catch (error) {
+      console.error("Fetch failed:", error);
+      updateConnectionStatus("disconnected", "❌ Connection lost. Reconnecting...");
+      localStorage.removeItem('esp32_ip');
+      esp32IP = null;
+      stopAutoRefresh();
+      setTimeout(discoverESP32, 5000);
+    }
   }
 
   function updateDashboard(data) {
-    document.getElementById("voltage").textContent = `${data.voltage} V`;
-    document.getElementById("current").textContent = `${data.current} A`;
-    document.getElementById("power").textContent = `${data.power} W`;
+    // System Status
+    document.getElementById("system-status").textContent = data.system_status;
+    const systemBadge = document.getElementById("system-badge");
+    systemBadge.textContent = data.system_status;
+    systemBadge.className = `status-badge ${data.system_status === 'ARMED' ? 'status-armed' : 'status-disarmed'}`;
+    
+    if (data.system_locked) {
+      systemBadge.className = 'status-badge status-locked';
+      systemBadge.textContent = 'LOCKED';
+    }
+    
+    document.getElementById("wrong-attempts").textContent = data.wrong_attempts;
+    document.getElementById("time-lock").textContent = data.time_based_lock ? 'Yes' : 'No';
 
-    const poolState = data.relays.pool;
-    const suggestion = poolState === "ON"
-      ? "✅ Pool Pump is running. You may turn it off."
-      : "💡 Suggestion: Turn on Pool Pump";
-    document.getElementById("ai-suggestion").textContent = suggestion;
+    // Power
+    document.getElementById("voltage").textContent = data.voltage.toFixed(1);
+    document.getElementById("current").textContent = data.current.toFixed(3);
+    document.getElementById("power").textContent = data.power.toFixed(2);
 
-    updateRelayButton("plug", data.relays.plug);
-    updateRelayButton("fan", data.relays.fan);
-    updateRelayButton("pool", data.relays.pool);
-    updateRelayButton("lights", data.relays.lights);
+    // Environment
+    document.getElementById("temperature").textContent = data.temperature;
+    document.getElementById("humidity").textContent = data.humidity;
+    document.getElementById("current-time").textContent = data.current_time;
+
+    // AI Analysis
+    document.getElementById("ai-suggestion").textContent = data.ai_analysis.suggestion || "All systems normal";
+    document.getElementById("normal-hours").textContent = data.ai_analysis.normal_hours ? 'Yes' : 'No';
+    document.getElementById("work-hours").textContent = data.ai_analysis.work_hours ? 'Yes' : 'No';
+    document.getElementById("sleep-hours").textContent = data.ai_analysis.sleeping_hours ? 'Yes' : 'No';
+    document.getElementById("unusual-activity").textContent = data.ai_analysis.unusual_activity ? 'Yes' : 'No';
+
+    // Sensors
+    document.getElementById("motion-status").textContent = data.motion ? '🟢 Detected' : '⚪ Clear';
+    document.getElementById("window-status").textContent = data.window ? '🔴 Open' : '🟢 Closed';
+    document.getElementById("fan-speed").textContent = data.fan_speed + '%';
+    document.getElementById("fan-status").textContent = data.fan_high ? '🔥 High' : '💨 Low';
+
+    // Relays
+    document.getElementById("pool-status").textContent = data.relays.pool;
+    document.getElementById("lights-status").textContent = data.relays.lights;
+
+    // Last Event
+    document.getElementById("last-reason").textContent = data.last_event.reason || 'None';
+    document.getElementById("last-event-time").textContent = data.last_event.time || '--';
   }
 
-  function updateRelayButton(device, state) {
-    const btn = document.getElementById(`${device}-btn`);
-    btn.textContent = state;
-    btn.className = `relay-btn ${state === "ON" ? "on" : "off"}`;
+  function updateConnectionStatus(status, message) {
+    const statusEl = document.getElementById("connection-status");
+    statusEl.textContent = message;
+    statusEl.className = `connection-status ${status}`;
   }
 
-  function toggleRelay(device) {
-    simulatedData.relays[device] = simulatedData.relays[device] === "ON" ? "OFF" : "ON";
-    updateDashboard(simulatedData);
+  function startAutoRefresh() {
+    refreshInterval = setInterval(fetchLiveData, 3000);
+  }
 
-    if (device === "pool" && simulatedData.relays.pool === "ON") {
-      setTimeout(() => {
-        simulatedData.relays.pool = "OFF";
-        updateDashboard(simulatedData);
-        const now = new Date().toLocaleString();
-        document.getElementById("log").innerHTML += `<div>⏱️ Pool Pump auto-off at ${now}</div>`;
-      }, 3600000);
+  function stopAutoRefresh() {
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+      refreshInterval = null;
     }
   }
 
-  document.getElementById("plug-btn").addEventListener("click", () => toggleRelay("plug"));
-  document.getElementById("fan-btn").addEventListener("click", () => toggleRelay("fan"));
-  document.getElementById("pool-btn").addEventListener("click", () => toggleRelay("pool"));
-  document.getElementById("lights-btn").addEventListener("click", () => toggleRelay("lights"));
+  function refreshData() {
+    fetchLiveData();
+  }
 
-  setInterval(() => {
-    simulatedData.power = Math.floor(Math.random() * 1500);
-    updateDashboard(simulatedData);
-  }, 5000);
+  function disconnect() {
+    stopAutoRefresh();
+    localStorage.removeItem('esp32_ip');
+    esp32IP = null;
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("login-screen").style.display = "block";
+    updateConnectionStatus("disconnected", "Disconnected");
+  }
 
-  updateDashboard(simulatedData);
+  // Enter key support
+  document.getElementById("pin-input").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      validatePIN();
+    }
+  });
+
+  // Auto-discovery on load
+  window.addEventListener('load', function() {
+    const savedIP = localStorage.getItem('esp32_ip');
+    if (savedIP) {
+      document.getElementById("pin-input").focus();
+    }
+  });
 </script>
-
-<h1>
-  🏠 <a href="https://LUHSHONGWE.github.io/smart-home-dashboard/" style="color: #00a8ff; text-decoration: none;">Smart Home Dashboard</a>
-</h1>
-
 </body>
-</
+</html>
